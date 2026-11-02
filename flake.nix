@@ -6,36 +6,16 @@
   outputs =
     { nixpkgs, ... }:
     let
-      systems = [
-        "x86_64-linux"
-        "aarch64-linux"
-        "x86_64-darwin"
-        "aarch64-darwin"
-      ];
-      forAllSystems = nixpkgs.lib.genAttrs systems;
+      pkgs = nixpkgs.legacyPackages.x86_64-linux;
     in
     {
-      devShells = forAllSystems (
-        system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-        in
-        {
-          default = pkgs.mkShell {
-            packages = with pkgs; [
-              gcc
-              gdb
-              pkg-config
-              raylib
-
-              clang-tools
-            ];
-
-            shellHook = ''
-              echo "Raycaster development environment"
-            '';
-          };
-        }
-      );
+      devShells.x86_64-linux.default = pkgs.mkShell {
+        packages = with pkgs; [
+          gcc
+          gdb
+          pkg-config
+          raylib
+        ];
+      };
     };
 }
